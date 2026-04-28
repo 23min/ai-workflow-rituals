@@ -17,7 +17,7 @@ This repo ships those opinions, separately, as Claude Code plugins. Two plugins,
 
 ## Install
 
-In a Claude Code session:
+In a Claude Code session, from inside a consumer repo:
 
 ```
 /plugin marketplace add 23min/ai-workflow-rituals
@@ -26,6 +26,16 @@ In a Claude Code session:
 ```
 
 Updates: `/plugin update <name>@ai-workflow-rituals`. Auto-update on startup is enabled by default while the marketplace is in active development.
+
+### Choosing an install scope
+
+Claude Code asks where to install. Pick **Project** scope by default. It writes `.claude/settings.json` into the consumer repo, which means:
+
+- Collaborators who clone the repo get the same plugins automatically.
+- Your other projects (using v1, a different framework, or none at all) stay clean.
+- The team's choice of rituals is reproducible and reviewable in PRs.
+
+**User scope** is only right if you're sure you want these plugins available in *every* project on your machine. **Local scope** (gitignored) is right for short-term experimentation in a single repo.
 
 For the planning kernel itself, see [`ai-workflow-v2`](https://github.com/23min/ai-workflow-v2):
 
