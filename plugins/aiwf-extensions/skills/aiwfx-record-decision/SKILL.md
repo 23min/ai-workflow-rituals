@@ -68,16 +68,28 @@ For a D-NNN: read this plugin's `templates/decision.md`. Fill in:
 - **Reasoning** — alternatives considered and rejected; honest reasoning.
 - **Consequences (optional)** — downstream rules or follow-up work.
 
-### 4. Frontmatter touches
+### 4. Body header — date and decided_by
 
-For both kinds, add or fill:
+In the body, just under the `# ADR-NNNN — <title>` (or `# D-NNN — <title>`) heading, add a one-line block-quote header capturing date and the person making the call:
 
-- `date: YYYY-MM-DD` — today.
-- `decided_by: <role/name>` — who's making the call (the user, typically).
+```markdown
+> **Date:** YYYY-MM-DD · **Decided by:** <role/name>
+```
+
+These do **not** go in frontmatter. aiwf core's frontmatter parser is strict — it rejects unknown fields so typos don't go silent — and `date` / `decided_by` are not part of the validated entity schema. Putting them in frontmatter would fail `aiwf check`.
+
+The canonical timestamp and actor are also recoverable from git via `aiwf history <id>` (commit author + ISO date), so the body header is redundant-but-friendly: it lets a human reading the file see when and by whom the decision was made without dropping to the CLI.
+
+### 5. Frontmatter touches (optional, for cross-references)
+
+aiwf core only validates these frontmatter fields on ADR / D-NNN entries: `id`, `title`, `status`, plus the cross-reference fields. Set the cross-references when relevant:
+
 - For an ADR that supersedes another: set `supersedes: [ADR-NNNN]`. **Then edit the superseded ADR** to set `superseded_by: ADR-NEW` and promote it to `superseded` via `aiwf promote`.
 - For a D-NNN tied to specific work: set `relates_to: [E-NN, M-NNN]` so cross-references resolve.
 
-### 5. Validate
+Skip both if no cross-references apply.
+
+### 6. Validate
 
 ```bash
 aiwf check
@@ -85,7 +97,7 @@ aiwf check
 
 Catches things like a misnamed reference, an out-of-set status, or a broken supersession chain.
 
-### 6. Commit the body fill
+### 7. Commit the body fill
 
 The `aiwf add` already produced one commit (the scaffold). The body fill is a second commit:
 
@@ -96,7 +108,7 @@ git commit -m "docs(adr): ADR-NNNN — <title>"
 
 The two-commit shape is intentional: the first commit is "id allocated"; the second is "decision authored." `aiwf history ADR-NNNN` shows both.
 
-### 7. Mirror the id back to the caller's context
+### 8. Mirror the id back to the caller's context
 
 If invoked from `aiwfx-start-milestone` mid-flight: add the new id under `## Decisions made during implementation` in the tracking doc.
 If from `aiwfx-wrap-epic`'s ADR harvest: add to `## ADRs ratified` or `## Decisions captured` in `wrap.md`.
