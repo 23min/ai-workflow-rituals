@@ -1,0 +1,24 @@
+{
+  "name": "ai-workflow-rituals",
+  "owner": {
+    "name": "Peter Bruinsma",
+    "email": "peter@23min.com",
+    "url": "https://github.com/23min"
+  },
+  "metadata": {
+    "description": "Engineering-ritual skills and role agents that complement aiwf, the planning kernel at github.com/23min/ai-workflow-v2.",
+    "version": "0.1.0-alpha"
+  },
+  "plugins": [
+    {
+      "name": "aiwf-extensions",
+      "source": "./plugins/aiwf-extensions",
+      "description": "Milestone-lifecycle skills (start, wrap, release, track, record-decision) and four role agents (planner, builder, reviewer, deployer). Calls aiwf — install only if you use aiwf as your planning kernel."
+    },
+    {
+      "name": "wf-rituals",
+      "source": "./plugins/wf-rituals",
+      "description": "Repo-agnostic engineering rituals: patch (one-off branch + PR), tdd-cycle (red/green/refactor with branch-coverage discipline), review-code (review checklist), doc-lint (mechanical doc hygiene). No coupling to aiwf — works on any repo."
+    }
+  ]
+}
