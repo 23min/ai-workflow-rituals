@@ -90,7 +90,7 @@ aiwf promote E-NN done
 
 aiwf validates `active → done`, rewrites frontmatter, commits with `aiwf-verb: promote`. (If the epic is still `proposed`, that means no milestone ever started — wrap doesn't apply. Investigate.)
 
-Add `completed: <YYYY-MM-DD>` to the epic spec frontmatter as a separate edit (the date stamp is yours; aiwf owns `status:`).
+The completion date is recorded in `wrap.md` (step 2) and is recoverable from the `aiwf-verb: promote` commit via `aiwf history E-NN`. Do not add a `completed:` field to the epic frontmatter — aiwf's epic schema does not include it, and the parse failure cascades into unresolved-reference findings on every entity that links to this epic.
 
 ### 5. 🛑 Merge gate — merge epic branch into integration target
 
@@ -110,7 +110,6 @@ git merge --no-ff epic/E-NN-<slug>
 
 ```bash
 git add work/epics/E-NN-<slug>/wrap.md
-git add work/epics/E-NN-<slug>/epic.md     # for the `completed:` date
 git status
 ```
 
