@@ -12,7 +12,7 @@ This repo ships those opinions, separately, as Claude Code plugins. Two plugins,
 
 | Plugin | Contains | When to install |
 |---|---|---|
-| **aiwf-extensions** | Milestone-lifecycle skills (`aiwfx-start-milestone`, `aiwfx-wrap-milestone`, `aiwfx-wrap-epic`, `aiwfx-release`, `aiwfx-track`, `aiwfx-record-decision`, …) plus four role agents (planner, builder, reviewer, deployer) | If you use `aiwf` as your planning kernel and want the milestone-driven engineering loop |
+| **aiwf-extensions** | Milestone-lifecycle skills (`aiwfx-start-milestone`, `aiwfx-wrap-milestone`, `aiwfx-wrap-epic`, `aiwfx-release`, `aiwfx-record-decision`, …) plus four role agents (planner, builder, reviewer, deployer) | If you use `aiwf` as your planning kernel and want the milestone-driven engineering loop |
 | **wf-rituals** | Generic engineering rituals (`wf-patch`, `wf-tdd-cycle`, `wf-review-code`, `wf-doc-lint`) | If you want the engineering rituals on their own — works on any repo, with or without `aiwf` |
 
 ## Install

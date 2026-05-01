@@ -23,12 +23,24 @@ If you find yourself running `wf-tdd-cycle` for a config nudge, you don't need i
 - Use the project's test framework. Don't introduce a new one mid-cycle.
 - Mock or stub external dependencies (network, clock, filesystem if the test isn't about the filesystem). Tests must be deterministic.
 - Run the tests. Confirm they **fail for the right reason** — the test reaches the assertion and the assertion is the thing that fails. A test that errors on import or fails on a typo isn't red yet.
+- If the project uses aiwf and the milestone is `tdd: required`, advance the AC's TDD phase to `red`:
+
+  ```bash
+  aiwf promote M-NNN/AC-<N> --phase red
+  ```
+
+  When `aiwf add ac` was called against a `tdd: required` milestone, the AC was already seeded at `red`; this step is idempotent and the FSM will refuse `red → red`. Skip it in that case.
 
 ### GREEN — Make it pass with the minimum code
 
 - Write the smallest code change that turns the failing test green.
 - Don't add features the test doesn't require. If you find yourself thinking "while I'm here…", stop — that's the next cycle.
 - Run the full test suite. Confirm the new test passes *and* nothing else broke.
+- If the project uses aiwf and the milestone is `tdd: required`:
+
+  ```bash
+  aiwf promote M-NNN/AC-<N> --phase green
+  ```
 
 ### REFACTOR — Clean up
 
@@ -36,11 +48,36 @@ If you find yourself running `wf-tdd-cycle` for a config nudge, you don't need i
 - Improve names that became wrong as the code grew.
 - Extract methods or types if shape demands it.
 - Run tests after every meaningful refactor. Stay green.
+- If the project uses aiwf and the milestone is `tdd: required` and the refactor was non-trivial:
+
+  ```bash
+  aiwf promote M-NNN/AC-<N> --phase refactor
+  ```
+
+  This step is optional — `green → done` is legal under the FSM. Use it when the refactor pass meaningfully reshaped the code.
 
 ### RECORD — Update where progress lives
 
-- Mark the acceptance criterion done (in whatever the project uses to track AC progress — a tracking doc, an issue, a checklist).
-- Note any decisions or deviations made mid-cycle.
+- If the project uses aiwf:
+    - Advance the AC's `tdd_phase` to `done`:
+
+      ```bash
+      aiwf promote M-NNN/AC-<N> --phase done
+      ```
+
+    - Mark the acceptance criterion `met`:
+
+      ```bash
+      aiwf promote M-NNN/AC-<N> met
+      ```
+
+      Under `tdd: required`, the kernel audit refuses `met` without `phase: done` — keep them in this order, OR use `--force --reason "..."` if you genuinely need to record `met` ahead of `done` (rare).
+    - Append a Work log entry under the milestone spec's `## Work log` section: `### AC-<N> — <short title>` followed by `<one-line outcome> · commit <SHA> · tests <N/M>`.
+    - The kernel records the phase + status timeline via `aiwf history M-NNN/AC-<N>` automatically — no need to duplicate dates and SHAs in the work log.
+- If the project doesn't use aiwf:
+    - Mark the acceptance criterion done in whatever the project uses to track AC progress (an issue, a checklist).
+    - Note any decisions or deviations made mid-cycle.
+- Note any decisions or deviations made mid-cycle (regardless of project framework).
 - If the project has no AC-tracking habit, skip — don't invent one.
 
 ## Branch-coverage audit (HARD RULE — runs before declaring done)
