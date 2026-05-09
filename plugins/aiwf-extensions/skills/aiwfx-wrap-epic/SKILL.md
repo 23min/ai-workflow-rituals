@@ -106,9 +106,18 @@ git merge --no-ff epic/E-NN-<slug>
 
 **Do not push yet.**
 
-### 6. Stage the wrap artefact and any spec edits
+### 6. Update `CHANGELOG.md` `[Unreleased]` and stage all wrap artefacts
+
+The `[Unreleased]` section of `CHANGELOG.md` is a per-epic accumulator: every wrapped epic adds an entry here, and `aiwfx-release` later rolls the accumulated entries into a versioned `## [X.Y.Z]` heading. *Without this step, releases ship with empty changelog entries* — that's the `[Unreleased]` drift this step prevents.
+
+Edit `CHANGELOG.md` to add a new sub-section under `## [Unreleased]`. Use a Keep-a-Changelog category as the heading: `### Added — E-NN: <one-line summary>`, `### Changed — E-NN: <one-line summary>`, or `### Fixed — E-NN: <one-line summary>` as appropriate. The body is a short paragraph (or bulleted milestone list, like prior epic entries in the file) summarising the **user-visible delta**: gaps closed, verbs added, behaviour changes, doctrine landed in `CLAUDE.md`. Internal refactors with no observable delta can be omitted; if everything is internal, a single line saying so still goes in (releases require *some* entry per the changelog-check workflow).
+
+The `wrap.md` file already captures the structured detail (milestones, ADRs, gaps); the CHANGELOG entry distils it for a release reader who has not been following along. Reference-phrasing is fine ("every milestone listed in `wrap.md` …") to avoid drift between the two documents.
+
+Then stage everything for the wrap commit:
 
 ```bash
+git add CHANGELOG.md
 git add work/epics/E-NN-<slug>/wrap.md
 git status
 ```
@@ -183,7 +192,9 @@ Append to `work/agent-history/<agent>.md` (whoever closed the epic): patterns th
 
 ## Out of scope
 
-Releases, changelogs, version tags, package publishing, deployment. Those belong to `aiwfx-release`.
+Version-tag cuts, the `[Unreleased]` → `[X.Y.Z]` rename, package publishing, and deployment. Those belong to `aiwfx-release`.
+
+**Note:** *Adding* the per-epic entry under `## [Unreleased]` in `CHANGELOG.md` is **in scope** for this skill (step 6). The `[Unreleased]` heading is the per-epic accumulator; `aiwfx-release` only rolls the accumulated entries forward when cutting a version. Skipping the CHANGELOG-update step at wrap is the failure mode that produces empty release notes — this skill owns prevention.
 
 ## Next step
 
