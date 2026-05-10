@@ -1,12 +1,12 @@
 ---
-id: E-NN
+id: E-NNNN
 title: <imperative title>
 status: proposed         # aiwf epic statuses: proposed | active | done | cancelled
-depends_on: []           # optional: prior epic ids; e.g. [E-02]
+depends_on: []           # optional: prior epic ids; e.g. [E-0002]
 completed:               # optional: YYYY-MM-DD, filled at wrap
 ---
 
-# E-NN — <Epic Title>
+# E-NNNN — <Epic Title>
 
 ## Goal
 
@@ -59,10 +59,10 @@ completed:               # optional: YYYY-MM-DD, filled at wrap
 
 <!-- Bulleted list, ordered by execution sequence. Status is NOT carried here — it lives
      in each milestone's frontmatter. Update this list when milestones are added, renamed,
-     or re-sequenced. Milestone ids are global (M-NNN), not epic-scoped. -->
+     or re-sequenced. Milestone ids are global (M-NNNN), not epic-scoped. -->
 
-- [M-NNN](work/epics/E-NN-<slug>/M-NNN-<slug>.md) — <one-line description> · depends on: —
-- [M-NNN](work/epics/E-NN-<slug>/M-NNN-<slug>.md) — <one-line description> · depends on: M-NNN
+- [M-NNNN](work/epics/E-NNNN-<slug>/M-NNNN-<slug>.md) — <one-line description> · depends on: —
+- [M-NNNN](work/epics/E-NNNN-<slug>/M-NNNN-<slug>.md) — <one-line description> · depends on: M-NNNN
 
 ## ADRs produced (optional)
 

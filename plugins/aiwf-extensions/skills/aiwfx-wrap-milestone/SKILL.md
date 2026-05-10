@@ -1,6 +1,6 @@
 ---
 name: aiwfx-wrap-milestone
-description: Closes an aiwf milestone — verifies all ACs met, runs scoped doc-lint, finalizes the tracking doc, promotes status to done, prepares the wrap commit. Use when the user says "wrap M-NNN" or "finish the cache milestone" and self-review per `aiwfx-start-milestone` has passed. Commit and push require explicit human approval.
+description: Closes an aiwf milestone — verifies all ACs met, runs scoped doc-lint, finalizes the tracking doc, promotes status to done, prepares the wrap commit. Use when the user says "wrap M-NNNN" or "finish the cache milestone" and self-review per `aiwfx-start-milestone` has passed. Commit and push require explicit human approval.
 ---
 
 # aiwfx-wrap-milestone
@@ -9,7 +9,7 @@ Closes a milestone. Verifies completeness, reconciles the tracking doc, promotes
 
 ## When to use
 
-The milestone's implementation is complete and self-reviewed (`aiwfx-start-milestone` step 6 ran clean). The user says: *"wrap M-NNN"*, *"finish M-007"*, *"close out the cache milestone"*.
+The milestone's implementation is complete and self-reviewed (`aiwfx-start-milestone` step 6 ran clean). The user says: *"wrap M-NNNN"*, *"finish M-0007"*, *"close out the cache milestone"*.
 
 If the milestone isn't actually done — failing tests, unmet ACs, broken build — stop and report. Don't paper over.
 
@@ -18,7 +18,7 @@ If the milestone isn't actually done — failing tests, unmet ACs, broken build 
 ### 1. Verify completion
 
 - Re-read the milestone spec. Walk every AC in frontmatter `acs[]`. Confirm each has at least one test that exercises it green.
-- Run `aiwf show M-NNN`; confirm every AC's `status` is terminal (`met`, `deferred`, or `cancelled`) — none `open`. Under `tdd: required`, also confirm every `met` AC has `tdd_phase: done` (the kernel's `acs-tdd-audit` will surface it otherwise).
+- Run `aiwf show M-NNNN`; confirm every AC's `status` is terminal (`met`, `deferred`, or `cancelled`) — none `open`. Under `tdd: required`, also confirm every `met` AC has `tdd_phase: done` (the kernel's `acs-tdd-audit` will surface it otherwise).
 - Run `aiwf check`. **Zero error-severity findings on the milestone.** The relevant codes: `acs-shape`, `acs-tdd-audit`, `milestone-done-incomplete-acs`, `acs-body-coherence`. Warnings (e.g. `acs-body-coherence`) are advisory but worth resolving before wrap.
 - Run the full test suite. **All pass.**
 - Run the project's build. **Green.**
@@ -28,7 +28,7 @@ If anything is red, stop and report. Wrap does not paper over failure.
 
 ### 2. Final code review
 
-- Skim for `TODO` / `FIXME` left behind. If they're intentional, document them in the milestone spec's `## Reviewer notes` section. If they're unintentional, fix or open as gaps (`aiwf add gap --title "..." --discovered-in M-NNN`).
+- Skim for `TODO` / `FIXME` left behind. If they're intentional, document them in the milestone spec's `## Reviewer notes` section. If they're unintentional, fix or open as gaps (`aiwf add gap --title "..." --discovered-in M-NNNN`).
 - Skim for debug code, commented-out blocks, scratch logging. Remove.
 - Confirm public-API or schema changes are reflected in README, inline docs, or wherever the project publishes its surface.
 
@@ -48,13 +48,13 @@ If the report is clean, note "doc-lint: clean" and continue. If findings:
 
 The v1 separate tracking doc is gone. The milestone spec itself carries the wrap-side sections; finalize them in place:
 
-- `## Work log` — confirm one entry per AC with the final outcome and commit SHA. The phase timeline is in `aiwf history M-NNN/AC-<N>`; don't duplicate dates here.
+- `## Work log` — confirm one entry per AC with the final outcome and commit SHA. The phase timeline is in `aiwf history M-NNNN/AC-<N>`; don't duplicate dates here.
 - `## Decisions made during implementation` — confirm every mid-flight decision is captured (each should already have an `ADR-NNNN` or `D-NNN` from `aiwfx-record-decision` invocations during work).
 - `## Validation` — paste the test-suite and build results.
 - `## Deferrals` — list any work this milestone deliberately punted; for each, **open a gap entity** so it survives:
 
   ```bash
-  aiwf add gap --title "<deferred-work>" --discovered-in M-NNN
+  aiwf add gap --title "<deferred-work>" --discovered-in M-NNNN
   ```
 
   Then mirror the resulting `G-NNN` id here. Deferred ACs (status `deferred`) get a one-line note pointing at the receiving milestone or gap.
@@ -65,7 +65,7 @@ For ACs that were `cancelled` mid-implementation, link to the `D-NNN` decision (
 ### 5. Promote the milestone status
 
 ```bash
-aiwf promote M-NNN done
+aiwf promote M-NNNN done
 ```
 
 aiwf validates `in_progress → done`, rewrites frontmatter, commits with `aiwf-verb: promote` trailers. The promote commit is *separate* from the implementation commits — it captures the moment of closure.
@@ -83,12 +83,12 @@ The roadmap reflects the milestone's new status without hand-edits.
 The milestone spec carries all the wrap-side prose now (Work log, Validation, Deferrals, Reviewer notes). Stage it:
 
 ```bash
-git add work/epics/E-NN-<slug>/M-NNN-<slug>.md
+git add work/epics/E-NNNN-<slug>/M-NNNN-<slug>.md
 git status
 git diff --staged --stat
 ```
 
-Draft a conventional commit message: `feat(<scope>): <one-line summary> (M-NNN)`.
+Draft a conventional commit message: `feat(<scope>): <one-line summary> (M-NNNN)`.
 
 ### 8. 🛑 Commit gate
 
@@ -110,7 +110,7 @@ git commit -m "<approved-message>"
 Confirm with the user before pushing. Then:
 
 ```bash
-git push -u origin milestone/M-NNN-<slug>
+git push -u origin milestone/M-NNNN-<slug>
 ```
 
 Open the PR if the project's flow is PR-driven. Reference the milestone id in the PR title.
@@ -140,7 +140,7 @@ Keep entries concise (2–5 lines each). If the file exceeds ~200 lines, summari
 
 ## Anti-patterns
 
-- *Wrapping with red tests.* Either fix the tests, escalate the AC failure, or cancel the milestone (`aiwf cancel M-NNN`). Don't wrap broken work as done.
+- *Wrapping with red tests.* Either fix the tests, escalate the AC failure, or cancel the milestone (`aiwf cancel M-NNNN`). Don't wrap broken work as done.
 - *Wrapping with open ACs.* The kernel's `milestone-done-incomplete-acs` finding will fire — `--force` lands the verb but leaves the standing check red. Resolve every AC to a terminal state (`met`/`deferred`/`cancelled`) before wrap.
 - *Silent deferrals.* Every "we'll do that later" gets a gap entity.
 - *Skipping doc-lint.* Doc drift compounds; the milestone wrap is the cheap moment to catch it.
@@ -148,5 +148,5 @@ Keep entries concise (2–5 lines each). If the file exceeds ~200 lines, summari
 
 ## Next step
 
-If this is the last milestone in the epic: → `aiwfx-wrap-epic E-NN`.
+If this is the last milestone in the epic: → `aiwfx-wrap-epic E-NNNN`.
 Otherwise: → `aiwfx-start-milestone <next-M>`.
