@@ -73,6 +73,28 @@ If the work fits in one milestone, skip this skill and use `aiwfx-plan-milestone
 - *Hand-writing scalar counts.* "5 milestones" rots; "every milestone listed below" doesn't.
 - *Treating "Open questions" as scratch.* If a question is blocking, state how it gets resolved.
 
+## Closing the planning session
+
+Planning is closed. Two paths from here:
+
+- **Continue to milestones now** → invoke `aiwfx-plan-milestones`. The merge-to-main prompt fires at *its* end, covering both skills' commits in one operation.
+- **Stop here** → the epic spec is settled but no milestones are planned yet. The planning commits live on the ritual branch; merge them to main now so the freshly-allocated `E-NNNN` id and the spec are visible to other worktrees, machines, or operators.
+
+For the stop-here path, prompt the user as a strong recommendation with explicit decline (not optional guidance):
+
+> Planning is closed. Default behavior is to merge to main now. Decline only with a specific reason — entity shape uncertain, near-term re-planning expected, team convention overrides. Merge now? (Y/n)
+
+When the operator confirms, drive the in-place merge:
+
+```bash
+git checkout main
+git merge --ff-only <ritual-branch>     # falls back to a three-way merge if FF isn't possible
+```
+
+When the operator declines, capture the one-line reason in the conversation transcript so future readers know.
+
+**Workflow assumption — single checkout, not a worktree.** The skill assumes the operator runs planning in a single checkout (the same one calling the skill). Planning is sequential conversation; it doesn't benefit from worktree-level parallelism, and the cwd-and-session switching that worktrees impose adds friction without payoff. Worktrees are an implementation-phase tool, not a planning-phase tool.
+
 ## Next step
 
-→ `aiwfx-plan-milestones` to break the epic into sequenced milestones.
+→ `aiwfx-plan-milestones` to break the epic into sequenced milestones, or merge to main and pause if stopping here. Run `aiwfx-start-milestone <M-NNNN>` only after the planning commits have landed on main.

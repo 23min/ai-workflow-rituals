@@ -66,6 +66,23 @@ If the epic doesn't exist yet, use `aiwfx-plan-epic` first.
 
 9. **Confirm the sequence with the user.** Walk through the milestone list together. Identify any scope adjustments before drafting begins.
 
+10. **Merge planning to main.** Planning is closed; the entity tree on this ritual branch now diverges from main. Default behavior is to merge to main now so the freshly-allocated `M-NNNN` ids, the epic's updated Milestones list, and any `depends_on` edges are visible to other worktrees, machines, or operators. Held on a long-lived branch, planning data is hostage: other Claude Code sessions see only main's view, parallel epics walk separate filesystem-only `next-free-id` views (id collisions surface only at eventual merge), and milestone branches stack on a long-lived parent — making the epic-wrap diff balloon.
+
+    Prompt the user as a strong recommendation with explicit decline:
+
+    > Planning is closed. Default behavior is to merge to main now. Decline only with a specific reason — entity shape uncertain, near-term re-planning expected, team convention overrides. Merge now? (Y/n)
+
+    When the operator confirms, drive the in-place merge:
+
+    ```bash
+    git checkout main
+    git merge --ff-only <ritual-branch>     # falls back to a three-way merge if FF isn't possible
+    ```
+
+    When the operator declines, capture the one-line reason in the conversation transcript so future readers know.
+
+    **Workflow assumption — single checkout, not a worktree.** The skill assumes the operator runs planning in a single checkout (the same one calling the skill). Planning is sequential conversation; it doesn't benefit from worktree-level parallelism, and the cwd-and-session switching that worktrees impose adds friction without payoff. Worktrees are an implementation-phase tool, not a planning-phase tool.
+
 ## What this skill does NOT do
 
 - Does not draft individual milestone specs in deep detail — that happens just-in-time when each milestone is started (via `aiwfx-start-milestone`). This skill produces the milestone *list and shape*, not the full spec body for milestones not yet started.
@@ -79,4 +96,4 @@ If the epic doesn't exist yet, use `aiwfx-plan-epic` first.
 
 ## Next step
 
-→ `aiwfx-start-milestone <M-NNNN>` for the first milestone in the sequence.
+→ `aiwfx-start-milestone <M-NNNN>` for the first milestone in the sequence. Run after the planning commits have landed on main (per step 10) so subsequent implementation branches can fork cleanly from main rather than stacking on the ritual branch.
