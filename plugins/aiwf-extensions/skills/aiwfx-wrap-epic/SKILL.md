@@ -1,17 +1,18 @@
 ---
 name: aiwfx-wrap-epic
-description: Closes an aiwf epic — verifies all milestones done, scaffolds a wrap artefact, harvests ADR candidates, runs scoped doc-lint, merges the epic branch into mainline, promotes the epic to done. Use when the user says "wrap E-NN" or "close the auth epic" and every milestone in the epic is wrapped. Commit and push require explicit human approval.
+description: Closes an aiwf epic — verifies all milestones done, scaffolds a wrap artefact, harvests ADR candidates, runs scoped doc-lint, merges the epic branch into mainline with a trailered merge commit, promotes the epic to done. Use when the user says "wrap E-NN" or "close the auth epic" and every milestone in the epic is wrapped. Commit and push require explicit human approval.
 ---
 
 # aiwfx-wrap-epic
 
-Closes an epic. The epic itself is a coordination unit — closing it means: every milestone is `done`, the integration branch merges to mainline, the wrap artefact captures what shipped and what didn't, and the epic's status flips to `done`.
+Closes an epic. The epic itself is a coordination unit — closing it means: every milestone is `done`, the integration branch merges to mainline via a trailered merge commit, the wrap artefact captures what shipped and what didn't, and the epic's status flips to `done`.
 
 ## Principles
 
 - **Wrap is closure, not release.** Tagging, packaging, publishing — those are `aiwfx-release`. This skill ends the planning unit.
 - **Branch cleanup is opt-in.** Local branches are preserved (so `tig` / `gitk` keep labelling history); origin branches for completed milestones are deleted to reduce remote refname clutter.
 - **Nothing is deleted at wrap.** Specs, tracking docs, the wrap artefact — all stay readable forever. Closure is a status change, not a deletion.
+- **The merge commit is trailered.** The integration-target merge commit carries `aiwf-verb: wrap-epic`, `aiwf-entity: E-NNNN`, `aiwf-actor: human/<id>` trailers — exactly the keys the kernel's `provenance-untrailered-entity-commit` finding expects. Without the trailers, the rule fires once per entity file touched by the merge.
 
 ## Precondition
 
@@ -21,6 +22,21 @@ Closes an epic. The epic itself is a coordination unit — closing it means: eve
 4. Integration target identified (usually `main`).
 
 If any precondition fails, stop and report. Do not improvise around an unfinished epic.
+
+## One-time setup (per consumer repo)
+
+`wrap.md` is an extension artefact, not a kernel-recognized entity file. The aiwf kernel's `aiwf check` enforces a closed tree shape under `work/` and will flag `wrap.md` as `unexpected-tree-file` unless it's whitelisted. Add this once to the consumer repo's `aiwf.yaml`:
+
+```yaml
+# wrap.md is the artefact emitted by aiwf-extensions:aiwfx-wrap-epic.
+# It's not a kernel-recognized entity, so whitelist the path so
+# `aiwf check` doesn't flag it as an unexpected-tree-file.
+tree:
+  allow_paths:
+    - "work/epics/E-*/wrap.md"
+```
+
+If you skip this, the first `aiwf check` after step 6 will warn (or, under `tree.strict: true`, error). Add the entry before staging the wrap artefact.
 
 ## Workflow
 
@@ -92,17 +108,33 @@ aiwf validates `active → done`, rewrites frontmatter, commits with `aiwf-verb:
 
 The completion date is recorded in `wrap.md` (step 2) and is recoverable from the `aiwf-verb: promote` commit via `aiwf history E-NN`. Do not add a `completed:` field to the epic frontmatter — aiwf's epic schema does not include it, and the parse failure cascades into unresolved-reference findings on every entity that links to this epic.
 
-### 5. 🛑 Merge gate — merge epic branch into integration target
+### 5. 🛑 Merge gate — merge epic branch into integration target with a trailered merge commit
 
 Confirm with the user. Then:
 
 ```bash
 git checkout main
 git pull --ff-only origin main
-git merge --no-ff epic/E-NN-<slug>
 ```
 
-`--no-ff` preserves the epic as a single merge commit; full history is recoverable via `git log <merge-sha>^2`. Record the merge SHA in `wrap.md`.
+Stage the merge **without committing** so the next step can attach the required trailers explicitly:
+
+```bash
+git merge --no-ff --no-commit epic/E-NN-<slug>
+```
+
+`--no-ff` preserves the epic as a single merge commit; `--no-commit` leaves the merge staged so the commit-emitting step is the one carrying trailers. Without `--no-commit`, git produces an untrailered merge commit and the kernel's `provenance-untrailered-entity-commit` rule fires once per entity file touched by the merge.
+
+Resolve the operator identity from `git config user.email` (per CLAUDE.md *Provenance model* §"Identity is runtime-derived"); do not hardcode `<id>`. Then commit with the three required trailers and a Conventional Commits subject:
+
+```bash
+git commit -m "chore(epic): wrap E-NNNN — <epic title>" \
+  --trailer "aiwf-verb: wrap-epic" \
+  --trailer "aiwf-entity: E-NNNN" \
+  --trailer "aiwf-actor: human/<id>"
+```
+
+The trailer keys are quoted from CLAUDE.md §"Commit conventions" verbatim — `aiwf-verb`, `aiwf-entity`, `aiwf-actor`. Variant casings (e.g. `Aiwf-Verb`) fail the kernel's trailer-keys policy. Record the resulting merge SHA in `wrap.md`.
 
 **Do not push yet.**
 
@@ -127,14 +159,19 @@ git status
 Show the user:
 - The wrap artefact summary.
 - `git diff --staged`.
-- The proposed wrap commit message: `chore(E-NN): wrap epic — <one-line summary>`.
+- The proposed wrap-artefact commit message: `chore(E-NN): wrap epic — <one-line summary>` plus the same three trailers.
 
 **Stop and wait for "commit" approval.**
 
 ### 8. After commit approval
 
+The wrap-artefact commit (the CHANGELOG + `wrap.md` addition) is a normal mutating commit on top of the trailered merge — it carries the same three trailer keys so `aiwf history E-NNNN` surfaces it alongside the merge:
+
 ```bash
-git commit -m "<approved-message>"
+git commit -m "<approved-message>" \
+  --trailer "aiwf-verb: wrap-epic" \
+  --trailer "aiwf-entity: E-NNNN" \
+  --trailer "aiwf-actor: human/<id>"
 ```
 
 ### 9. 🛑 Push gate
@@ -178,6 +215,7 @@ Append to `work/agent-history/<agent>.md` (whoever closed the epic): patterns th
 ## Constraints
 
 - 🛑 **Never merge or push without explicit approval** (steps 5, 9, 10).
+- 🛑 **The merge commit and the wrap-artefact commit both carry the three required trailers.** Skipping either is the regression the kernel's `provenance-untrailered-entity-commit` finding catches.
 - Every milestone must be `done` before wrap — `aiwf check` and `aiwf history E-NN` confirm.
 - Branch-cleanup is origin-only. Do not delete local branches.
 - The wrap artefact is mandatory. Don't close an epic without one.
@@ -189,6 +227,8 @@ Append to `work/agent-history/<agent>.md` (whoever closed the epic): patterns th
 - *Slipping a code change into the wrap commit.* If the change is real, it's a milestone or a `wf-patch`.
 - *Skipping the ADR harvest.* The window to record "why we did it this way" closes when the team forgets.
 - *Pushing before approval.*
+- *Merging without `--no-commit`.* Produces an untrailered merge commit; the kernel rule fires once per entity file touched.
+- *Hardcoding `<id>` in the actor trailer.* Resolve from `git config user.email` at run time per the provenance model.
 
 ## Out of scope
 
