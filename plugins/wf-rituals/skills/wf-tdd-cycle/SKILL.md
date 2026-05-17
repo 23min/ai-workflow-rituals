@@ -7,6 +7,8 @@ description: Red/green/refactor for a single acceptance criterion or feature uni
 
 A single iteration of test-first development for one acceptance criterion or one focused feature unit. Ends with a branch-coverage audit that is a **hard rule**, not a guideline.
 
+**Spec:** see [`docs/pocv3/design/legal-workflows.md#wf-tdd-cycle`](../../../../docs/pocv3/design/legal-workflows.md#wf-tdd-cycle) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
+
 ## When to use
 
 - The user is implementing one acceptance criterion of an in-progress milestone.

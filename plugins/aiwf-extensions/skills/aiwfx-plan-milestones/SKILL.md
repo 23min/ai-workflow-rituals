@@ -7,6 +7,8 @@ description: Decomposes an approved aiwf epic into a sequenced set of independen
 
 Decomposes an existing epic into milestones. The skill drives the conversation about *what to ship in what order*; aiwf owns id allocation and per-milestone commits.
 
+**Spec:** see [`docs/pocv3/design/legal-workflows.md#aiwfx-plan-milestones`](../../../../docs/pocv3/design/legal-workflows.md#aiwfx-plan-milestones) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
+
 ## When to use
 
 An epic spec exists. The user says: *"break E-NNNN into milestones"*, *"plan the work for the auth epic"*, *"sequence the milestones for X"*.

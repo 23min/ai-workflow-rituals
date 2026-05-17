@@ -7,6 +7,8 @@ description: Sets up and begins an aiwf milestone — preflight checks, branch s
 
 Begins implementation of an existing milestone. Promotes status, sets up the branch, and hands off to `wf-tdd-cycle` for each acceptance criterion. AC progress lives in the milestone spec's frontmatter `acs[]` (kernel-validated via `aiwf check`); the v1 separate tracking-doc convention is gone.
 
+**Spec:** see [`docs/pocv3/design/legal-workflows.md#aiwfx-start-milestone`](../../../../docs/pocv3/design/legal-workflows.md#aiwfx-start-milestone) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
+
 ## When to use
 
 A milestone spec exists at `work/epics/E-NNNN-<slug>/M-NNNN-<slug>.md` with status `draft`. The user says: *"start M-NNNN"*, *"implement the cache milestone"*, *"begin M-0007"*.

@@ -9,6 +9,8 @@ A non-interactive lint over a project's narrative docs. Surfaces drift between d
 
 This skill is intentionally narrow: structural correctness of narrative documentation, mechanical checks a pipeline can run. It does not judge content quality, alignment of prose with code semantics, or doc tier. Those need human or AI prose work, not a lint.
 
+**Spec:** see [`docs/pocv3/design/legal-workflows.md#wf-doc-lint`](../../../../docs/pocv3/design/legal-workflows.md#wf-doc-lint) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
+
 ## When to use
 
 - Before opening a PR that touches code referenced from docs.

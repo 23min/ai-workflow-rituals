@@ -7,6 +7,8 @@ description: Closes an aiwf epic — verifies all milestones done, scaffolds a w
 
 Closes an epic. The epic itself is a coordination unit — closing it means: every milestone is `done`, the integration branch merges to mainline via a trailered merge commit, the wrap artefact captures what shipped and what didn't, and the epic's status flips to `done`.
 
+**Spec:** see [`docs/pocv3/design/legal-workflows.md#aiwfx-wrap-epic`](../../../../docs/pocv3/design/legal-workflows.md#aiwfx-wrap-epic) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
+
 ## Principles
 
 - **Wrap is closure, not release.** Tagging, packaging, publishing — those are `aiwfx-release`. This skill ends the planning unit.

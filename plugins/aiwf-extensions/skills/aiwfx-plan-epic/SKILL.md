@@ -7,6 +7,8 @@ description: Scopes, refines, and documents a new aiwf epic. Allocates the next 
 
 Scopes a new epic and produces its spec. The skill does the planning conversation and the spec authoring; aiwf owns id allocation and commit.
 
+**Spec:** see [`docs/pocv3/design/legal-workflows.md#aiwfx-plan-epic`](../../../../docs/pocv3/design/legal-workflows.md#aiwfx-plan-epic) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
+
 ## When to use
 
 The user wants to start planning a feature, capability, or initiative that doesn't fit inside a single milestone. Phrases that trigger this skill: *"plan feature X"*, *"design the system for Y"*, *"I want to build Z"*, *"start an epic for …"*.

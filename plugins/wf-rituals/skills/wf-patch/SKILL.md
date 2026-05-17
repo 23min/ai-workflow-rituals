@@ -7,6 +7,8 @@ description: One-off branch-and-PR ritual for fixes, chores, or tweaks too small
 
 A lightweight ritual for changes too small to be a milestone but too significant to lose in a careless commit. The branch + PR shape is the audit trail; the commit and push gates are the safety net.
 
+**Spec:** see [`docs/pocv3/design/legal-workflows.md#wf-patch`](../../../../docs/pocv3/design/legal-workflows.md#wf-patch) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
+
 ## When to use
 
 The user describes a single focused change that:
