@@ -7,8 +7,6 @@ description: Tags a release after an aiwf epic is closed and merged. Determines 
 
 Tags and publishes a release. aiwf has no `released` status — `done` is the terminal state for an epic. This skill records the release act in the artifacts that downstream consumers see (git tag, CHANGELOG), not in aiwf state.
 
-**Spec:** see [`docs/pocv3/design/legal-workflows.md#aiwfx-release`](../../../../docs/pocv3/design/legal-workflows.md#aiwfx-release) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
-
 ## When to use
 
 An epic has been wrapped (`aiwfx-wrap-epic` ran, status is `done`, integration branch merged to mainline). The user says: *"release v1.2"*, *"tag a release"*, *"publish"*.

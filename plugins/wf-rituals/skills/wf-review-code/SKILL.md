@@ -7,8 +7,6 @@ description: Code review checklist with verdict (approve / request-changes / que
 
 A structured review pass over a diff. Produces a verdict and a list of findings with file:line locations. The skill is a checklist, not a rewrite — it surfaces issues, the human decides what to do with them.
 
-**Spec:** see [`docs/pocv3/design/legal-workflows.md#wf-review-code`](../../../../docs/pocv3/design/legal-workflows.md#wf-review-code) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
-
 ## When to use
 
 - The user says "review this," "check my changes," "review the PR," or similar.

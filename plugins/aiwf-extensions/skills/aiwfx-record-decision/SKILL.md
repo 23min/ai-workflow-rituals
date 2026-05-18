@@ -7,8 +7,6 @@ description: Records a decision that surfaces during planning, implementation, o
 
 A thin recipe. The skill exists so the mechanical steps of capturing a decision (allocate the id, pick the right template, fill it in, commit) happen consistently from any caller.
 
-**Spec:** see [`docs/pocv3/design/legal-workflows.md#aiwfx-record-decision`](../../../../docs/pocv3/design/legal-workflows.md#aiwfx-record-decision) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
-
 ## When to use
 
 A decision becomes clear that future readers (six months from now) would regret not finding written down. Triggers:

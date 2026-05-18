@@ -7,8 +7,6 @@ description: Open-work synthesis ritual — answers direction questions like "wh
 
 Synthesises the open-work landscape into a tiered view, a recommended sequence, a first-decision fork, and a Q&A gate over pending decisions. The output is conversational, not authoritative — the operator decides; the skill surfaces.
 
-**Spec:** see [`docs/pocv3/design/legal-workflows.md#aiwfx-whiteboard`](../../../../docs/pocv3/design/legal-workflows.md#aiwfx-whiteboard) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
-
 ## Tier classification rubric
 
 Classify each open item by **leverage on future work**, not by chronology of when it appeared. The criteria below are reproducible; tier *contents* may vary at the margin (LLM judgement on borderline items is acceptable; the criteria themselves do not move).

@@ -7,8 +7,6 @@ description: Closes an aiwf milestone — verifies all ACs met, runs scoped doc-
 
 Closes a milestone. Verifies completeness, reconciles the tracking doc, promotes the milestone to `done`, prepares the single wrap commit.
 
-**Spec:** see [`docs/pocv3/design/legal-workflows.md#aiwfx-wrap-milestone`](../../../../docs/pocv3/design/legal-workflows.md#aiwfx-wrap-milestone) for the canonical entry condition, sequenced verb calls, branch, post-conditions, and tree-level invariants this skill implements.
-
 ## When to use
 
 The milestone's implementation is complete and self-reviewed (`aiwfx-start-milestone` step 6 ran clean). The user says: *"wrap M-NNNN"*, *"finish M-0007"*, *"close out the cache milestone"*.
