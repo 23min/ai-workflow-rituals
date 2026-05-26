@@ -121,16 +121,6 @@ Open the PR if the project's flow is PR-driven. Reference the milestone id in th
 - Delete the milestone branch on origin.
 - Run `aiwf render roadmap --write` once more if the merge introduced any state aiwf would notice.
 
-### 12. Record learnings
-
-Append to `work/agent-history/builder.md` (or whichever agent drove the work):
-
-- Patterns that worked (testing approaches, code organization).
-- Pitfalls encountered (build issues, test flakiness, API quirks).
-- Conventions established or discovered.
-
-Keep entries concise (2–5 lines each). If the file exceeds ~200 lines, summarize older entries.
-
 ## Constraints
 
 - 🛑 **Never commit or push without explicit human approval** (steps 8, 10).

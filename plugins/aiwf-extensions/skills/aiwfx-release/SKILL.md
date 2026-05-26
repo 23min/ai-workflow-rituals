@@ -91,13 +91,7 @@ If the project records release ↔ epic linkage somewhere (a release notes doc, 
 
 The aiwf epic stays `done`. There's no separate "released" status — the git tag and CHANGELOG entry are the durable record of the release.
 
-### 8. Record learnings
-
-Append to `work/agent-history/deployer.md`:
-
-- Release-process issues or improvements discovered.
-- Infrastructure or pipeline patterns worth keeping.
-- Any rollback or recovery actions taken.
+### 8. Capture any release-time decision
 
 If a notable release-time decision was made (rolled back, hotfixed, deferred a feature out of the cut), capture it via `aiwfx-record-decision`.
 
