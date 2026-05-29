@@ -39,6 +39,48 @@ Docs with no inbound links from any other doc, README, or code file. They might 
 
 `TODO`, `FIXME`, `XXX`, or similar markers anywhere under `docs/`. List them with `path:line`. Most projects accumulate these; the lint just makes them visible so they can be triaged or grandfathered explicitly.
 
+### 5. Contributor-state and path leaks
+
+Absolute filesystem paths in committed text leak contributor-local state — usernames, project layouts, machine-specific install locations. None of it informs a downstream reader; all of it inflates the surface where personal identifiers and unrelated-project names creep into public-facing repos.
+
+Patterns that should trip the rule:
+
+- `/Users/<name>/...` (macOS home)
+- `/home/<name>/...` (Linux home; allowlist well-known devcontainer users like `/home/vscode/`)
+- `C:\Users\<name>\...` (Windows variants)
+- `~/<...>`, `$HOME/<...>` (shell home expansion in prose; idiomatic in shell scripts — allowlist by file path)
+- `/tmp/`, `/private/`, `/var/`, `/opt/` (machine-state paths)
+
+Unlike the other four checks above (which are skill-internal heuristics the LLM applies), this one's right home is a **standalone tool the consumer's repo owns and configures**, because:
+
+- The rule is deterministic and mechanical (regex → match), so it deserves a real chokepoint, not LLM-judged advisory.
+- The exact patterns and allowlist policy are repo-specific (each project has its own contributor identities to exclude, its own legitimate paths to allow, its own placeholder conventions for test fixtures).
+- The same tool needs to be invokable from multiple chokepoints: pre-commit hook, CI workflow, manual run — that distribution problem is already solved by mature tools.
+
+**Recommended tool family:** [gitleaks](https://github.com/gitleaks/gitleaks) (also viable: `detect-secrets`, `ggshield`). All three are CLI-based, support custom regex rules, and have first-class integrations for pre-commit hooks, GitHub Actions, and ad-hoc invocation. The plugin does not ship rules; the consumer's repo owns its `.gitleaks.toml` (or equivalent), tuned to its own contributors and allowlist.
+
+**What the consumer adds:**
+
+1. A `.gitleaks.toml` at the repo root with the path-leak rules and the project-specific allowlist (archive dirs, testdata fixtures, well-known devcontainer users, codified test placeholders).
+2. A pre-commit hook that runs `gitleaks detect --config=.gitleaks.toml --no-banner --no-git` and blocks on non-zero exit.
+3. Optionally, a CI workflow that runs the same command. The pre-commit hook gives fast feedback; CI is the authoritative chokepoint.
+
+**Example rule shape (gitleaks TOML):**
+
+```toml
+[[rules]]
+id = "path-leak-darwin-home"
+description = "Absolute path leak: macOS home directory"
+regex = '''/Users/[A-Za-z][A-Za-z0-9_.-]*/'''
+tags = ["path-leak", "contributor-state"]
+
+[[allowlists]]
+description = "archive/ subdirs are forget-by-default"
+paths = ['''/archive/''']
+```
+
+When this skill runs as advisory ritual, point the operator at their `.gitleaks.toml` and recommend `gitleaks detect`. Don't try to re-implement the rule in prose — the operator's existing tool is the source of truth.
+
 ## What it deliberately does NOT do
 
 - **Does not rewrite prose.** Every finding is for human attention.
